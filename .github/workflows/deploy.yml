@@ -24,11 +24,10 @@ jobs:
         run: hexo clean && hexo generate
 
       - name: Deploy to GitHub Pages
-        run: |
-          cd public
-          git init
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "Auto-deploy by GitHub Actions"
-          git push --force https://${{ secrets.GITHUB_TOKEN }}@github.com/pinestu/pinestu.github.io.git main
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./public
+          external_repository: pinestu/pinestu.github.io
+          publish_branch: main
+          commit_message: "Auto-deploy by GitHub Actions"    
