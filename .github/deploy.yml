@@ -1,0 +1,34 @@
+name: Auto-Deploy
+on:
+  push:
+    branches: [ main ]  # 监听 main 分支的推送
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install Hexo
+        run: |
+          npm install hexo-cli -g
+          npm install
+
+      - name: Generate Static Files
+        run: hexo clean && hexo generate
+
+      - name: Deploy to GitHub Pages
+        run: |
+          cd public
+          git init
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-deploy by GitHub Actions"
+          git push --force https://${{ secrets.GITHUB_TOKEN }}@github.com/pinestu/pinestu.github.io.git main
